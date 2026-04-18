@@ -13,8 +13,6 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Define our Benchmark Queries covering different modalities
-# IMPORTANT: Adjust these questions to actually match the PDF you uploaded!
 BENCHMARK_QUERIES = [
     {"type": "Text Retrieval", "question": "What is the main topic or abstract of this document?"},
     {"type": "Table Extraction", "question": "Extract the specific data from the first table you see in the document."},
@@ -23,7 +21,7 @@ BENCHMARK_QUERIES = [
 
 def run_evaluation():
     results = []
-    print("🚀 Starting Multi-Modal Benchmark Evaluation...\n")
+    print("Starting Multi-Modal Benchmark Evaluation...\n")
     
     for item in BENCHMARK_QUERIES:
         query_type = item["type"]
@@ -34,7 +32,7 @@ def run_evaluation():
             # 1. Search Qdrant via Colab
             resp = requests.post(
                 f"{COLAB_API_URL}/search",
-                json={"query": question, "top_k": 1} # Just get the best page
+                json={"query": question, "top_k": 1} # get the best page
             )
             resp.raise_for_status()
             search_res = resp.json().get("results", [])[0]
@@ -69,7 +67,7 @@ def run_evaluation():
     # Save to a JSON file for the report
     with open("evaluation_results.json", "w") as f:
         json.dump(results, f, indent=4)
-    print("✅ Evaluation complete. Results saved to evaluation_results.json")
+    print("Evaluation complete. Results saved to evaluation_results.json")
 
 if __name__ == "__main__":
     run_evaluation()
